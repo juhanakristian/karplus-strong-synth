@@ -4,8 +4,7 @@
   "description": "React and TypeScript example starter project",
   "keywords": [
     "typescript",
-    "react",
-    "starter"
+    "react"
   ],
   "main": "src/index.tsx",
   "dependencies": {
@@ -17,13 +16,12 @@
   "devDependencies": {
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.9",
-    "typescript": "4.4.2"
+    "typescript": "4.4.2",
+    "vite": "^4.4.6"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "start": "vite",
+    "build": "vite build"
   },
   "browserslist": [
     ">0.2%",
