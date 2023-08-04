@@ -4,6 +4,11 @@ import React, { useState } from "react";
 
 import { generateKarplusStrongNote, playKarplusStrong } from "./karplus/pluck";
 
+import { InstrumentPanel, Knob } from "react-ableton/dist/index";
+
+const MAX_FREQUENCY = 493.88;
+const MIN_FREQUENCY = 261.63;
+
 function pitchToFrequency(pitch: string) {
   const pitchMap: Record<string, number> = {
     C: 261.63,
@@ -22,7 +27,7 @@ function pitchToFrequency(pitch: string) {
     A: 440.0,
     "A#": 466.16,
     Bb: 466.16,
-    B: 493.88
+    B: 493.88,
   };
 
   const note = pitch.charAt(0).toUpperCase();
@@ -39,13 +44,17 @@ function pitchToFrequency(pitch: string) {
   return frequency * Math.pow(2, octave - 4);
 }
 
+function scalarToFrequency(scalar: number) {
+  return scalar * (MAX_FREQUENCY - MIN_FREQUENCY) + MIN_FREQUENCY;
+}
+
 const Synthesizer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [pitch, setPitch] = useState("A4");
+  const [frequencyValue, setFrequencyValue] = useState(0.5);
 
   const handlePlayNote = () => {
     // Convert the pitch to frequency
-    const frequency = pitchToFrequency(pitch);
+    const frequency = scalarToFrequency(frequencyValue);
 
     // Generate the Karplus-Strong note
     const duration = 2; // Change this to desired duration
@@ -57,24 +66,19 @@ const Synthesizer = () => {
     setIsPlaying(true);
   };
 
-  const handlePitchChange = (event: any) => {
-    setPitch(event.target.value);
-  };
-
   return (
     <div>
-      <h1>Karplus-Strong Synthesizer</h1>
-      <label htmlFor="pitch-select">Select Pitch:</label>
-      <select id="pitch-select" value={pitch} onChange={handlePitchChange}>
-        <option value="A4">A4</option>
-        <option value="C5">C5</option>
-        <option value="E5">E5</option>
-        {/* Add more pitch options as needed */}
-      </select>
-      <br />
-      <button onClick={handlePlayNote}>
-        {isPlaying ? "Playing..." : "Play Note"}
-      </button>
+      <InstrumentPanel title="Karplus-Strong Synthesizer">
+        <Knob
+          title="Frequency"
+          value={frequencyValue}
+          onChange={setFrequencyValue}
+        />
+        <br />
+        <button onClick={handlePlayNote}>
+          {isPlaying ? "Playing..." : "Play Note"}
+        </button>
+      </InstrumentPanel>
     </div>
   );
 };
