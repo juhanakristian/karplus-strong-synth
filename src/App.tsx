@@ -1,10 +1,10 @@
-import "./styles.css";
+import "./index.css";
 
 import React, { useState } from "react";
 
 import { generateKarplusStrongNote, playKarplusStrong } from "./karplus/pluck";
 
-import { InstrumentPanel, Knob } from "react-ableton/dist/index";
+import { InstrumentPanel, Knob, RoundedButton } from "react-ableton/dist/index";
 
 const MAX_FREQUENCY = 493.88;
 const MIN_FREQUENCY = 261.63;
@@ -67,7 +67,7 @@ const Synthesizer = () => {
   };
 
   return (
-    <div>
+    <div className="max-w-screen-md">
       <InstrumentPanel title="Karplus-Strong Synthesizer">
         <Knob
           title="Frequency"
@@ -75,9 +75,7 @@ const Synthesizer = () => {
           onChange={setFrequencyValue}
         />
         <br />
-        <button onClick={handlePlayNote}>
-          {isPlaying ? "Playing..." : "Play Note"}
-        </button>
+        <RoundedButton onClick={handlePlayNote}>Test</RoundedButton>
       </InstrumentPanel>
     </div>
   );
@@ -85,7 +83,7 @@ const Synthesizer = () => {
 
 export default function App() {
   return (
-    <div className="App">
+    <div className="flex flex-col items-center">
       <Synthesizer />
     </div>
   );
