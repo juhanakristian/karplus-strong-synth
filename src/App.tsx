@@ -49,7 +49,6 @@ function scalarToFrequency(scalar: number) {
 }
 
 const Synthesizer = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
   const [frequencyValue, setFrequencyValue] = useState(0.5);
 
   const handlePlayNote = () => {
@@ -63,11 +62,10 @@ const Synthesizer = () => {
 
     // Play the note
     playKarplusStrong(buffer);
-    setIsPlaying(true);
   };
 
   return (
-    <div className="max-w-screen-md">
+    <div className="w-2/4">
       <InstrumentPanel title="Karplus-Strong Synthesizer">
         <Knob
           title="Frequency"
@@ -83,7 +81,7 @@ const Synthesizer = () => {
 
 export default function App() {
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center pt-20">
       <Synthesizer />
     </div>
   );
