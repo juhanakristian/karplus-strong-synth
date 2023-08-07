@@ -1,10 +1,12 @@
 import "./index.css";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { generateKarplusStrongNote, playKarplusStrong } from "./karplus/pluck";
 
-import { InstrumentPanel, Knob, RoundedButton } from "react-ableton/dist/index";
+import { InstrumentPanel, Knob, RoundedButton } from "react-ableton";
+
+import EnvelopeSection from "./components/EnvelopeSection";
 
 const MAX_FREQUENCY = 493.88;
 const MIN_FREQUENCY = 261.63;
@@ -67,6 +69,7 @@ const Synthesizer = () => {
   return (
     <div className="w-2/4">
       <InstrumentPanel title="Karplus-Strong Synthesizer">
+        <EnvelopeSection />
         <Knob
           title="Frequency"
           value={frequencyValue}
