@@ -1,10 +1,14 @@
+import { Envelope } from "./types";
+
 const audioContext = new AudioContext();
 
 export function generateKarplusStrongNote(
   frequency: number,
-  duration: number,
-  volume: number
+  envelope: Envelope
 ): Float32Array {
+  const duration =
+    envelope.attack + envelope.decay + envelope.sustain + envelope.release;
+
   const sampleRate = audioContext.sampleRate;
   const bufferSize = Math.ceil(duration * sampleRate);
   const buffer = new Float32Array(bufferSize);
@@ -35,6 +39,7 @@ export function playKarplusStrong(buffer: Float32Array) {
     buffer.length,
     audioContext.sampleRate
   );
+
   const channelData = audioBuffer.getChannelData(0);
   channelData.set(buffer);
 

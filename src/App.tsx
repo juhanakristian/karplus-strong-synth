@@ -52,6 +52,12 @@ function scalarToFrequency(scalar: number) {
 
 const Synthesizer = () => {
   const [frequencyValue, setFrequencyValue] = useState(0.5);
+  const [envelope, setEnvelope] = useState({
+    attack: 0,
+    decay: 0,
+    sustain: 0,
+    release: 0,
+  });
 
   const handlePlayNote = () => {
     // Convert the pitch to frequency
@@ -60,7 +66,7 @@ const Synthesizer = () => {
     // Generate the Karplus-Strong note
     const duration = 2; // Change this to desired duration
     const volume = 0.5; // Change this to desired volume
-    const buffer = generateKarplusStrongNote(frequency, duration, volume);
+    const buffer = generateKarplusStrongNote(frequency, envelope);
 
     // Play the note
     playKarplusStrong(buffer);
@@ -69,7 +75,7 @@ const Synthesizer = () => {
   return (
     <div className="w-2/4">
       <InstrumentPanel title="Karplus-Strong Synthesizer">
-        <EnvelopeSection />
+        <EnvelopeSection envelope={envelope} onChange={setEnvelope} />
         <Knob
           title="Frequency"
           value={frequencyValue}
