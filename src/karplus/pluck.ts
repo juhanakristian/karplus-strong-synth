@@ -1,4 +1,5 @@
 import { Envelope } from "./types";
+import { calculateEnvelope } from "./util";
 
 const audioContext = new AudioContext();
 
@@ -10,7 +11,7 @@ export function generateKarplusStrongNote(
     envelope.attack + envelope.decay + envelope.sustain + envelope.release;
 
   const sampleRate = audioContext.sampleRate;
-  const bufferSize = Math.ceil(duration * sampleRate);
+  const bufferSize = Math.ceil((duration / 1000) * sampleRate);
   const buffer = new Float32Array(bufferSize);
   const delay = Math.round(sampleRate / frequency);
 
@@ -24,9 +25,9 @@ export function generateKarplusStrongNote(
     buffer[i] = 0.5 * (buffer[i - delay] + buffer[i - delay + 1]);
   }
 
-  // Apply volume scaling
+  const volumeBuffer = calculateEnvelope(envelope, 1, sampleRate);
   for (let i = 0; i < bufferSize; i++) {
-    buffer[i] *= volume;
+    buffer[i] *= volumeBuffer[i];
   }
 
   return buffer;
