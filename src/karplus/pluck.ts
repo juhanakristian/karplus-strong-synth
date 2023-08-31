@@ -7,8 +7,7 @@ export function generateKarplusStrongNote(
   frequency: number,
   envelope: Envelope
 ): Float32Array {
-  const duration =
-    envelope.attack + envelope.decay + envelope.sustain + envelope.release;
+  const duration = envelope.attack + envelope.release;
 
   const sampleRate = audioContext.sampleRate;
   const bufferSize = Math.ceil((duration / 1000) * sampleRate);
