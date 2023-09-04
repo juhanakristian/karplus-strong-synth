@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Knob } from "react-ableton";
 import { Envelope } from "../karplus/types";
 
@@ -9,7 +8,7 @@ type Props = {
 
 export default function EnvelopeSection({ envelope, onChange }: Props) {
   function msFormatter(value: number) {
-    return `${value}ms`;
+    return `${value.toFixed(0)}ms`;
   }
 
   return (

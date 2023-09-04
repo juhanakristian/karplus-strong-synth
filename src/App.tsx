@@ -64,8 +64,6 @@ const Synthesizer = () => {
     const frequency = scalarToFrequency(frequencyValue);
 
     // Generate the Karplus-Strong note
-    const duration = 2; // Change this to desired duration
-    const volume = 0.5; // Change this to desired volume
     const buffer = generateKarplusStrongNote(frequency, envelope);
 
     // Play the note
