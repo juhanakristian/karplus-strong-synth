@@ -12,7 +12,7 @@ export default function EnvelopeSection({ envelope, onChange }: Props) {
   }
 
   return (
-    <div className="flex">
+    <div className="flex gap-2 justify-end">
       <Knob
         title="Attack"
         value={envelope.attack}

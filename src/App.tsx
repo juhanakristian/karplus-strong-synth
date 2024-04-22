@@ -4,9 +4,10 @@ import { useState } from "react";
 
 import { generateKarplusStrongNote, playKarplusStrong } from "./karplus/pluck";
 
-import { InstrumentPanel, Knob, RoundedButton } from "react-ableton";
+import { DevicePanel, Knob, RoundedButton, Keyboard } from "react-ableton";
 
 import EnvelopeSection from "./components/EnvelopeSection";
+import Sequencer from "./components/Sequencer";
 
 const MAX_FREQUENCY = 493.88;
 const MIN_FREQUENCY = 261.63;
@@ -50,8 +51,14 @@ function scalarToFrequency(scalar: number) {
   return scalar * (MAX_FREQUENCY - MIN_FREQUENCY) + MIN_FREQUENCY;
 }
 
+function midiToFrequency(note: number) {
+  console.log(note)
+  return Math.pow(2, (note - 69) / 12) * 440;
+}
+
 const Synthesizer = () => {
   const [frequencyValue, setFrequencyValue] = useState(0.5);
+  const [note, setNote] = useState(0);
   const [envelope, setEnvelope] = useState({
     attack: 0,
     decay: 0,
@@ -70,18 +77,26 @@ const Synthesizer = () => {
     playKarplusStrong(buffer);
   };
 
+  function handleKeyDown(key: number) {
+    // Convert the pitch to frequency
+    const frequency = midiToFrequency(key);
+
+    console.log(frequency);
+    // Generate the Karplus-Strong note
+    const buffer = generateKarplusStrongNote(frequency, envelope);
+
+    // Play the note
+    playKarplusStrong(buffer);
+  }
+
   return (
-    <div className="w-2/4">
-      <InstrumentPanel title="Karplus-Strong Synthesizer">
+    <div >
+      <DevicePanel title="Karplus-Strong Synthesizer">
         <EnvelopeSection envelope={envelope} onChange={setEnvelope} />
-        <Knob
-          title="Frequency"
-          value={frequencyValue}
-          onChange={setFrequencyValue}
-        />
-        <br />
-        <RoundedButton onClick={handlePlayNote}>Test</RoundedButton>
-      </InstrumentPanel>
+        <div className="pt-1">
+          <Keyboard onKeyDown={handleKeyDown}/>
+        </div>
+      </DevicePanel>
     </div>
   );
 };
