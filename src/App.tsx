@@ -1,10 +1,11 @@
 import "./index.css";
 
+import React from "react";
 import { useState } from "react";
 
-import { generateKarplusStrongNote, playKarplusStrong } from "./karplus/pluck";
+import {Pluck} from "./karplus/pluck";
 
-import { DevicePanel, Knob, RoundedButton, Keyboard } from "react-ableton";
+import {DevicePanel, Knob, RoundedButton, Keyboard, ToggleButton} from "react-ableton";
 
 import EnvelopeSection from "./components/EnvelopeSection";
 import Sequencer from "./components/Sequencer";
@@ -52,13 +53,16 @@ function scalarToFrequency(scalar: number) {
 }
 
 function midiToFrequency(note: number) {
-  console.log(note)
   return Math.pow(2, (note - 69) / 12) * 440;
 }
+
+let audioContext : AudioContext | null = null;
+let pluck: Pluck | null = null;
 
 const Synthesizer = () => {
   const [frequencyValue, setFrequencyValue] = useState(0.5);
   const [note, setNote] = useState(0);
+  const [onOff, setOnOff] = React.useState(false);
   const [envelope, setEnvelope] = useState({
     attack: 0,
     decay: 0,
@@ -66,32 +70,27 @@ const Synthesizer = () => {
     release: 0,
   });
 
-  const handlePlayNote = () => {
-    // Convert the pitch to frequency
-    const frequency = scalarToFrequency(frequencyValue);
-
-    // Generate the Karplus-Strong note
-    const buffer = generateKarplusStrongNote(frequency, envelope);
-
-    // Play the note
-    playKarplusStrong(buffer);
-  };
-
-  function handleKeyDown(key: number) {
+  async function handleKeyDown(key: number) {
     // Convert the pitch to frequency
     const frequency = midiToFrequency(key);
+    if (!pluck) return;
 
-    console.log(frequency);
-    // Generate the Karplus-Strong note
-    const buffer = generateKarplusStrongNote(frequency, envelope);
+    pluck.play(frequency);
+  }
 
-    // Play the note
-    playKarplusStrong(buffer);
+  async function handleOnOff() {
+    if (!audioContext || !pluck) {
+      audioContext = new AudioContext();
+      pluck = new Pluck(audioContext);
+    }
+
+    setOnOff(!onOff);
   }
 
   return (
     <div >
       <DevicePanel title="Karplus-Strong Synthesizer">
+        <ToggleButton state={onOff} onClick={handleOnOff} >On/Off</ToggleButton>
         <EnvelopeSection envelope={envelope} onChange={setEnvelope} />
         <div className="pt-1">
           <Keyboard onKeyDown={handleKeyDown}/>

@@ -5,9 +5,10 @@
     "compilerOptions": {
         "strict": true,
         "esModuleInterop": true,
+        "target": "ES5",
         "lib": [
             "dom",
-            "es2015"
+            "es5"
         ],
         "jsx": "react-jsx"
     }
