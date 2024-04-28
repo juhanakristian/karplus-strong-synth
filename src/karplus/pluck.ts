@@ -21,6 +21,7 @@ export class Pluck {
     const node: AudioWorkletNode = new AudioWorkletNode(this.context, 'karplus-strong-processor');
     // @ts-ignore
     node.parameters.get('frequency')!.setValueAtTime(frequency, this.context.currentTime);
+    // @ts-ignore
     node.parameters.get('sampleRate')!.setValueAtTime(this.context.sampleRate, this.context.currentTime);
     node.connect(this.context.destination);
   }

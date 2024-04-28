@@ -5,10 +5,11 @@ import { useState } from "react";
 
 import {Pluck} from "./karplus/pluck";
 
-import {DevicePanel, Knob, RoundedButton, Keyboard, ToggleButton} from "react-ableton";
+import {DevicePanel, Knob, RoundedButton, Keyboard, ToggleButton, Dropdown, DropdownItem} from "react-ableton";
 
 import EnvelopeSection from "./components/EnvelopeSection";
 import Sequencer from "./components/Sequencer";
+import {NoteMessageEvent, WebMidi} from "webmidi";
 
 const MAX_FREQUENCY = 493.88;
 const MIN_FREQUENCY = 261.63;
@@ -63,18 +64,40 @@ const Synthesizer = () => {
   const [frequencyValue, setFrequencyValue] = useState(0.5);
   const [note, setNote] = useState(0);
   const [onOff, setOnOff] = React.useState(false);
-  const [envelope, setEnvelope] = useState({
-    attack: 0,
-    decay: 0,
-    sustain: 0,
-    release: 0,
-  });
+  const [midiInput, setMidiInput] = React.useState("")
+
+  function handleMidiEnabled() {
+    if (WebMidi.inputs.length === 0) console.log("No midi inputs")
+
+    for (const input of WebMidi.inputs) {
+      console.log(input.name)
+    }
+  }
+
+  React.useEffect(() => {
+    WebMidi.enable()
+        .then(handleMidiEnabled)
+        .catch(e => console.log(e))
+  }, [])
+
+  function handleNoteOn(event: NoteMessageEvent) {
+    if (!pluck) return;
+    // Convert the pitch to frequency
+    const frequency = midiToFrequency(event.note.number);
+    pluck.play(frequency);
+
+  }
+
+  React.useEffect(() => {
+    const input = WebMidi.inputs.find(i => i.id == midiInput)
+    if (!input) return;
+    input.channels[1].addListener("noteon", handleNoteOn)
+  }, [midiInput])
 
   async function handleKeyDown(key: number) {
+    if (!pluck) return;
     // Convert the pitch to frequency
     const frequency = midiToFrequency(key);
-    if (!pluck) return;
-
     pluck.play(frequency);
   }
 
@@ -91,7 +114,16 @@ const Synthesizer = () => {
     <div >
       <DevicePanel title="Karplus-Strong Synthesizer">
         <ToggleButton state={onOff} onClick={handleOnOff} >On/Off</ToggleButton>
-        <EnvelopeSection envelope={envelope} onChange={setEnvelope} />
+        <div>
+        {WebMidi.enabled && (
+            <Dropdown value={midiInput} onChange={(v) => setMidiInput(v)}>
+              <DropdownItem value="">Choose Midi input</DropdownItem>
+              {WebMidi.inputs.map(input =>
+                  <DropdownItem key={input.id} value={input.id}>{input.name}</DropdownItem>
+              )}
+            </Dropdown>
+        )}
+        </div>
         <div className="pt-1">
           <Keyboard onKeyDown={handleKeyDown}/>
         </div>
